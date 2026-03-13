@@ -1,0 +1,28 @@
+# Playwright
+node_modules/
+playwright-report/
+.playwright/
+test-results/
+auth/*.json
+!auth/.gitkeep
+
+# Temporary files
+.DS_Store
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local

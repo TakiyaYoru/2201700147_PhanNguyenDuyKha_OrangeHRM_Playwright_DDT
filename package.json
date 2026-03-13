@@ -1,0 +1,29 @@
+{
+  "name": "2201700147_orangehrm_playwright_ddt",
+  "version": "1.0.0",
+  "description": "Automation Test Web UI - OrangeHRM with Playwright and Data-Driven Testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:login": "playwright test tests/login.spec.ts",
+    "test:search": "playwright test tests/search.spec.ts",
+    "test:setup": "playwright test tests/auth.setup.ts",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+    "codegen:search": "playwright codegen --load-storage=auth/auth.json https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "orangehrm",
+    "ddt"
+  ],
+  "author": "Phan Nguyễn Duy Khang",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "validCandidates": [
+    {
+      "description": "Thêm ứng viên với thông tin đầy đủ - Thanh Duy",
+      "firstName": "Thanh",
+      "lastName": "Duy",
+      "email": "thanh.duy@test.com",
+      "phone": "0123456789",
+      "expectedResult": "success"
+    },
+    {
+      "description": "Thêm ứng viên - Hùng Vương",
+      "firstName": "Hùng",
+      "lastName": "Vương",
+      "email": "hung.vuong@test.com",
+      "phone": "0987654321",
+      "expectedResult": "success"
+    },
+    {
+      "description": "Thêm ứng viên - John Smith",
+      "firstName": "John",
+      "lastName": "Smith",
+      "email": "john.smith@test.com",
+      "phone": "1234567890",
+      "expectedResult": "success"
+    },
+    {
+      "description": "Thêm ứng viên - Jane Doe",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane.doe@test.com",
+      "phone": "0918273645",
+      "expectedResult": "success"
+    }
+  ],
+  "invalidCandidates": [
+    {
+      "description": "Thêm ứng viên mà không có firstName",
+      "firstName": "",
+      "lastName": "Duy",
+      "email": "invalid@test.com",
+      "phone": "0123456789",
+      "expectedResult": "failure",
+      "expectedError": "Required"
+    },
+    {
+      "description": "Thêm ứng viên mà không có lastName",
+      "firstName": "Test",
+      "lastName": "",
+      "email": "test@test.com",
+      "phone": "0123456789",
+      "expectedResult": "failure",
+      "expectedError": "Required"
+    },
+    {
+      "description": "Thêm ứng viên với email không hợp lệ",
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "invalid-email",
+      "phone": "0123456789",
+      "expectedResult": "failure",
+      "expectedError": "Invalid"
+    },
+    {
+      "description": "Thêm ứng viên với email rỗng",
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "",
+      "phone": "0123456789",
+      "expectedResult": "failure",
+      "expectedError": "Required"
+    },
+    {
+      "description": "Thêm ứng viên với phone chứa ký tự",
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "test@test.com",
+      "phone": "abc123def",
+      "expectedResult": "failure",
+      "expectedError": "Invalid"
+    }
+  ]
+}

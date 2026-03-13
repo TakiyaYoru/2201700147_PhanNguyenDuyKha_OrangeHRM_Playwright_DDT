@@ -1,0 +1,206 @@
+B1. Khởi tạo project
+npm init playwright@latest
+
+B2. Tạo file test-data/users.json
+[
+  {
+    "description": "Login thanh cong voi tai khoan Admin",
+    "username": "Admin",
+    "password": "admin123",
+    "expectedResult": "success",
+    "expectedUrl": "/web/index.php/dashboard/index",
+    "expectedElement": ".oxd-topbar-header-breadcrumb"
+  },
+  {
+    "description": "Login that bai voi mat khau sai",
+    "username": "Admin",
+    "password": "wrongpassword",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login that bai voi ten dang nhap sai",
+    "username": "invaliduser",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login that bai voi ca username va password sai",
+    "username": "fakeuser",
+    "password": "fakepassword",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login that bai voi username trong",
+    "username": "",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  },
+  {
+    "description": "Login that bai voi password trong",
+    "username": "Admin",
+    "password": "",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  },
+  {
+    "description": "Login that bai voi ca hai truong trong",
+    "username": "",
+    "password": "",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  }
+]
+
+
+B3. Codegen lấy locator
+npx playwright codegen --output=tests/login.spec.ts https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
+
+
+B4. Sửa tay thay hardcode bằng JSON
+import { test, expect } from '@playwright/test';
+import users from '../test-data/users.json';
+
+for (const user of users.validUsers) {
+  test(`Login thành công - ${user.role}`, async ({ page }) => {
+    await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+    await page.getByPlaceholder('Username').fill(user.username);
+    await page.getByPlaceholder('Password').fill(user.password);
+    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(page).toHaveURL(/dashboard/);
+  });
+}
+
+B5. Lưu session auth.json
+npx playwright codegen --save-storage=auth/auth.json https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
+
+
+B6. Tạo test-data/search.json
+{
+  "validSearch": [
+    {
+      "employeeName": "Admin",
+      "description": "Tim theo ten day du",
+      "minExpectedRows": 1
+    },
+    {
+      "employeeName": "a",
+      "description": "Tim theo ky tu dau",
+      "minExpectedRows": 1
+    },
+    {
+      "employeeName": "ad",
+      "description": "Tim theo 2 ky tu",
+      "minExpectedRows": 1
+    }
+  ],
+  "invalidSearch": [
+    {
+      "employeeName": "XXXXXXXXXXX",
+      "description": "Ten khong ton tai",
+      "expectedMessage": "No Records Found"
+    },
+    {
+      "employeeName": "123456789",
+      "description": "Nhap so thay ten",
+      "expectedMessage": "No Records Found"
+    },
+    {
+      "employeeName": "!@#$%^&*()",
+      "description": "Nhap ky tu dac biet",
+      "expectedMessage": "No Records Found"
+    },
+    {
+      "employeeName": "<script>alert(1)</script>",
+      "description": "XSS injection",
+      "expectedMessage": "No Records Found"
+    }
+  ]
+}
+
+
+B7. Codegen lấy locator màn hình search Employee List
+npx playwright codegen --load-storage=auth/auth.json --output=tests/search.spec.ts https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList
+
+
+B8. Sửa code search data từ JSON file
+
+import { test, expect } from '@playwright/test';
+import searchData from '../test-data/search.json';
+
+const SEARCH_URL = 'https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList';
+
+test.use({ storageState: 'auth/auth.json' });
+
+// Search có kết quả
+for (const item of searchData.validSearch) {
+  test(`Search thành công - ${item.field}: "${item.value}"`, async ({ page }) => {
+    await page.goto(SEARCH_URL);
+
+    // Fill search field
+    await page.getByPlaceholder('Type for hints...').fill(item.value);
+    await page.getByRole('button', { name: 'Search' }).click();
+
+    // Verify có kết quả
+    await expect(page.getByRole('row').nth(1)).toBeVisible();
+  });
+}
+
+// Search không có kết quả
+for (const item of searchData.invalidSearch) {
+  test(`Search không có kết quả - "${item.value}"`, async ({ page }) => {
+    await page.goto(SEARCH_URL);
+
+    await page.getByPlaceholder('Type for hints...').fill(item.value);
+    await page.getByRole('button', { name: 'Search' }).click();
+
+    await expect(page.getByText(item.expectedResult)).toBeVisible();
+  });
+}
+
+B9. Cấu hình report trong playwright.config.ts
+
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  timeout: 60000,
+  reporter: [
+    ['html', { outputFolder: 'playwright-report', open: 'always' }],
+    ['list']
+  ],
+  use: {
+    headless: false,
+    navigationTimeout: 60000,
+    actionTimeout: 15000,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure',
+  },
+  projects: [
+    // Project 1: Chạy login setup trước, lưu auth.json
+    {
+      name: 'setup',
+      testMatch: /auth\.setup\.ts/,
+      use: { headless: true },
+    },
+    // Project 2: Các test cần đăng nhập, chờ setup xong mới chạy
+    {
+      name: 'authenticated',
+      testIgnore: /auth\.setup\.ts/,
+      dependencies: ['setup'],
+      use: { headless: true },
+    },
+  ],
+});
+
+
+B10. Chạy và xem report
+# Chạy riêng search
+npx playwright test tests/search.spec.ts
+
+# Mở lại report
+npx playwright show-report

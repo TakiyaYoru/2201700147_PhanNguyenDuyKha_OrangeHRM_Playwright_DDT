@@ -1,0 +1,80 @@
+[
+  {
+    "description": "Login thành công với tài khoản Admin",
+    "username": "Admin",
+    "password": "admin123",
+    "expectedResult": "success",
+    "expectedUrl": "/web/index.php/dashboard/index",
+    "expectedElement": ".oxd-topbar-header-breadcrumb"
+  },
+  {
+    "description": "Login thất bại với mật khẩu sai",
+    "username": "Admin",
+    "password": "wrongpassword",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với tên đăng nhập sai",
+    "username": "invaliduser",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với cả username và password sai",
+    "username": "fakeuser",
+    "password": "fakepassword",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với username trống",
+    "username": "",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  },
+  {
+    "description": "Login thất bại với password trống",
+    "username": "Admin",
+    "password": "",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  },
+  {
+    "description": "Login thất bại với cả hai trường trống",
+    "username": "",
+    "password": "",
+    "expectedResult": "failure",
+    "expectedError": "Required"
+  },
+  {
+    "description": "Login thất bại với username có khoảng trắng thừa",
+    "username": "  Admin  ",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với mật khẩu có khoảng trắng thừa",
+    "username": "Admin",
+    "password": "  admin123  ",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với ký tự đặc biệt trong username",
+    "username": "Admin@#$",
+    "password": "admin123",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "description": "Login thất bại với SQL injection",
+    "username": "' OR '1'='1",
+    "password": "' OR '1'='1",
+    "expectedResult": "failure",
+    "expectedError": "Invalid credentials"
+  }
+]
