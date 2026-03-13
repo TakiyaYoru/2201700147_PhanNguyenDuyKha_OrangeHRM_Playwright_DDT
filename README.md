@@ -1,127 +1,96 @@
 # Automation Test Project - OrangeHRM with Playwright
 
-Đây là project kiểm thử tự động Web UI cho ứng dụng OrangeHRM sử dụng Playwright và kỹ thuật Data-Driven Testing (DDT).
+Kiểm thử tự động Web UI cho OrangeHRM sử dụng Playwright và Data-Driven Testing (DDT).
 
-**Sinh viên**: Phan Nguyễn Duy Khang  
-**MSSV**: 2201700147  
+Sinh viên: Phan Nguyễn Duy Khang
+MSSV: 2201700147
 
 ---
 
-##  Quy Trình Xây Dựng Project (B1-B10)
+## Test Cases: 29 Scenarios
 
-### **B1. Khởi tạo project**
-```bash
-npm init playwright@latest
-```
+Total: 29 test cases x 2 browsers (Chrome, Firefox) = 58 tests
 
-### **B2. Tạo file test-data/users.json**
-Chứa 7 test cases:
-- 1 case đăng nhập thành công (Admin)
-- 6 cases đăng nhập thất bại (mật khẩu sai, username sai, trường trống, etc)
+### 1. LOGIN (11 cases)
+- 1 success: Admin/admin123
+- 10 failures: wrong password, wrong username, empty fields, SQL injection, whitespace, special chars
 
-### **B3. Codegen lấy locator**
-```bash
-npx playwright codegen --output=tests/login.spec.ts https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
-```
+### 2. SEARCH (9 cases)
+- 3 valid: full name, first char, 2 chars
+- 6 invalid: non-existent name, numbers, special chars, XSS injection, etc
 
-### **B4. Sửa tay thay hardcode bằng JSON**
-- Thay thế hardcode bằng dữ liệu từ users.json
-- Dùng loop `for...of` để tạo dynamic test cases
+### 3. ADD CANDIDATE (9 cases)
+- 4 valid: Thanh Duy, Hung Vuong, John Smith, Jane Doe
+- 5 invalid: empty firstName, empty lastName, invalid email, invalid phone
 
-### **B5. Lưu session auth.json**
-```bash
-npx playwright codegen --save-storage=auth/auth.json https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
-```
+---
 
-### **B6. Tạo test-data/search.json**
-Chứa:
-- `validSearch`: 3 cases tìm kiếm thành công
-- `invalidSearch`: 4 cases tìm kiếm thất bại (tên không tồn tại, số, ký tự đặc biệt, XSS)
+## Data-Driven Testing (DDT)
 
-### **B7. Codegen lấy locator màn hình search**
-```bash
-npx playwright codegen --load-storage=auth/auth.json --output=tests/search.spec.ts https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList
-```
+Dữ liệu test lưu trong JSON files:
 
-### **B8. Sửa code search data từ JSON file**
-- Sử dụng auth/auth.json để bỏ qua login
-- Loop qua validSearch và invalidSearch
-- Verify kết quả tìm kiếm
+test-data/users.json - 11 login scenarios
+test-data/search.json - 9 search scenarios  
+test-data/candidate.json - 9 candidate scenarios
 
-### **B9. Cấu hình report trong playwright.config.ts**
+Mỗi test case loop qua data, không hardcode.
+
+---
+
+## Setup & Run
+
+npm install
+
+npm run test:setup
+
+npm test
+
+npm run report
+
+---
+
+## Multi-Browser Testing
+
+Supported: Chromium (Chrome) + Firefox
+
+Projects: 7 (1 setup + 6 test projects)
+
+---
+
+## Git Repository
+
+https://github.com/TakiyaYoru/2201700147_PhanNguyenDuyKha_OrangeHRM_Playwright_DDT
+
+### B9. Cấu hình report trong playwright.config.ts
 - Cấu hình HTML reporter
-- Cấu hình projects: setup và authenticated
-- Setup dependencies: authenticated tests chỉ chạy sau khi setup xong
+- Cấu hình projects: setup + login, search, candidate
+- Multi-browser: Chromium, Firefox
 
-### **B10. Chạy và xem report**
+### B10. Chạy và xem report
 ```bash
-# Chạy riêng search
-npx playwright test tests/search.spec.ts
-
-# Mở lại report
+npx playwright test
 npx playwright show-report
 ```
 
 ---
 
-##  Hướng Dẫn Chạy Project
-
-### **1. Cài đặt dependencies**
-```bash
-npm install
-```
-
-### **2. Chạy setup (B5 - Lưu session)**
-```bash
-npm run test:setup
-```
-Hoặc:
-```bash
-npx playwright test tests/auth.setup.ts
-```
-
-### **3. Chạy toàn bộ test**
-```bash
-npm test
-```
-
-### **4. Chạy riêng từng test**
-```bash
-# Chạy login tests
-npm run test:login
-
-# Chạy search tests
-npm run test:search
-
-# Chạy ở chế độ headed (xem browser)
-npm run test:headed
-
-# Chạy ở chế độ debug
-npm run test:debug
-```
-
-### **5. Xem báo cáo**
-```bash
-npm run report
-```
-
----
-
-##  Cấu Trúc Project
+## Cấu Trúc Project
 
 ```
 2201700147_PhanNguyenDuyKha_OrangeHRM_Playwright/
 ├── tests/
-│   ├── auth.setup.ts              # B5: Setup & lưu auth.json
-│   ├── login.spec.ts              # B3-B4: Login tests (7 cases)
-│   └── search.spec.ts             # B7-B8: Search tests (7 cases)
+│   ├── auth.setup.ts              (Setup: Đăng nhập & lưu auth.json)
+│   ├── login.spec.ts              (11 test cases Login)
+│   ├── search.spec.ts             (9 test cases Search)
+│   └── addCandidate.spec.ts       (9 test cases Add Candidate)
 ├── test-data/
-│   ├── users.json                 # B2: Login test data
-│   └── search.json                # B6: Search test data
+│   ├── users.json                 (11 DDT cases Login)
+│   ├── search.json                (9 DDT cases Search)
+│   └── candidate.json             (9 DDT cases Candidate)
 ├── auth/
-│   └── auth.json                  # B5: Session storage (auto-created)
-├── playwright-report/             # B10: HTML report
-├── playwright.config.ts           # B9: Config & projects setup
+│   └── auth.json                  (Session storage - auto-created)
+├── playwright-report/             (HTML report - auto-created)
+├── playwright.config.ts           (Config & projects)
 ├── package.json
 ├── .gitignore
 └── README.md
@@ -129,44 +98,117 @@ npm run report
 
 ---
 
-##  Key Features
+## Chạy Project
 
-**Data-Driven Testing** - Dữ liệu test trong JSON files  
- **Session Management** - Lưu & tái sử dụng session auth  
- **Projects Setup** - Setup project chạy trước, authenticated chạy sau  
- **HTML Reports** - Tự động open report sau khi test  
- **Screenshots** - Chụp ảnh khi test thất bại  
- **Videos** - Ghi video khi test thất bại  
+### 1. Cài đặt dependencies
+```bash
+npm install
+```
 
----
-
-## Test Cases
-
-| File | Số Test | Mô Tả |
-|------|---------|-------|
-| auth.setup.ts | 1 | Đăng nhập & lưu session |
-| login.spec.ts | 7 | Login (1 success + 6 failure) |
-| search.spec.ts | 7 | Search (3 found + 4 not found) |
-| **Total** | **15** | **Test cases** |
-
----
-
-## 🛠️ Troubleshooting
-
-### Lỗi: `storageState not found`
+### 2. Chạy setup (B5 - Lưu session)
 ```bash
 npm run test:setup
 ```
 
-### Lỗi: Element not found
-1. Dùng Playwright Inspector: `npx playwright codegen [URL]`
-2. Kiểm tra HTML để lấy selector chính xác
-
-### Muốn xem browser khi test
+### 3. Chạy toàn bộ test
 ```bash
-npm run test:headed
+npm test
+```
+
+### 4. Chạy riêng từng test
+```bash
+npm run test:login
+npm run test:search
+```
+
+### 5. Xem báo cáo
+```bash
+npm run report
 ```
 
 ---
 
-**Tạo**: March 13, 2026 | **Phiên bản**: 1.0.0
+## Data-Driven Testing (DDT)
+
+### Login Test Cases (11)
+Success:
+- Login thành công với tài khoản Admin
+
+Failure:
+- Mật khẩu sai
+- Username sai
+- Cả username và password sai
+- Username trống
+- Password trống
+- Cả hai trường trống
+- Username có khoảng trắng thừa
+- Password có khoảng trắng thừa
+- Ký tự đặc biệt trong username
+- SQL Injection attempt
+
+### Search Test Cases (9)
+Valid:
+- Tìm theo tên đầy đủ (Admin)
+- Tìm theo ký tự đầu (a)
+- Tìm theo 2 ký tự (ad)
+
+Invalid:
+- Tên không tồn tại (XXXXXXXXXXX)
+- Nhập số thay tên (123456789)
+- Ký tự đặc biệt (!@#$%^&*())
+- XSS injection (<script>alert(1)</script>)
+- Ký tự sai ở cuối (zzzzzzzzz)
+- Slash nhiều lần (////)
+
+### Candidate Test Cases (9)
+Valid:
+- Thanh Duy
+- Hùng Vương
+- John Smith
+- Jane Doe
+
+Invalid:
+- Không có firstName
+- Không có lastName
+- Email không hợp lệ
+- Email rỗng
+- Phone chứa ký tự chữ
+
+---
+
+## Multi-Browser Testing
+
+Trình duyệt hỗ trợ:
+- Chromium (Chrome)
+- Firefox
+
+Projects:
+- setup: 1
+- login: 2 (chrome + firefox)
+- search: 2 (chrome + firefox)
+- addcandidate: 2 (chrome + firefox)
+
+Test Coverage:
+- Login: 11 cases x 2 browsers = 22 tests
+- Search: 9 cases x 2 browsers = 18 tests
+- Candidate: 9 cases x 2 browsers = 18 tests
+- Total: ~58 tests
+
+---
+
+## Troubleshooting
+
+Lỗi: storageState not found
+- Chạy: npm run test:setup
+
+Lỗi: Element not found
+- Dùng Playwright Inspector: npx playwright codegen [URL]
+
+Timeout
+- Kiểm tra kết nối internet
+- Tăng timeout trong playwright.config.ts
+
+---
+
+Date: March 13, 2026
+Version: 1.0.0
