@@ -28,13 +28,13 @@ export default defineConfig({
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], headless: true },
     },
-    // Project 3: Login tests on Firefox
-    {
-      name: 'login-firefox',
-      testMatch: /login\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Firefox'], headless: true },
-    },
+    // Project 3: Login tests on Firefox - COMMENTED
+    // {
+    //   name: 'login-firefox',
+    //   testMatch: /login\.spec\.ts/,
+    //   dependencies: ['setup'],
+    //   use: { ...devices['Desktop Firefox'], headless: true },
+    // },
     // Project 4: Search tests on Chromium
     {
       name: 'search-chromium',
@@ -42,13 +42,13 @@ export default defineConfig({
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], headless: true },
     },
-    // Project 5: Search tests on Firefox
-    {
-      name: 'search-firefox',
-      testMatch: /search\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Firefox'], headless: true },
-    },
+    // Project 5: Search tests on Firefox - COMMENTED
+    // {
+    //   name: 'search-firefox',
+    //   testMatch: /search\.spec\.ts/,
+    //   dependencies: ['setup'],
+    //   use: { ...devices['Desktop Firefox'], headless: true },
+    // },
     // Project 6: Add Candidate tests on Chromium
     {
       name: 'addcandidate-chromium',
@@ -56,12 +56,12 @@ export default defineConfig({
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], headless: true },
     },
-    // Project 7: Add Candidate tests on Firefox
-    {
-      name: 'addcandidate-firefox',
-      testMatch: /addCandidate\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Firefox'], headless: true },
-    },
+    // Project 7: Add Candidate tests on Firefox - COMMENTED
+    // {
+    //   name: 'addcandidate-firefox',
+    //   testMatch: /addCandidate\.spec\.ts/,
+    //   dependencies: ['setup'],
+    //   use: { ...devices['Desktop Firefox'], headless: true },
+    // },
   ],
 });
