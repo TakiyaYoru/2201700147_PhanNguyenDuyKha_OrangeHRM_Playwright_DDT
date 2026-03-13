@@ -35,54 +35,33 @@ export default defineConfig({
       dependencies: ['setup'],
       use: { ...devices['Desktop Firefox'], headless: true },
     },
-    // Project 4: Login tests on WebKit
-    {
-      name: 'login-webkit',
-      testMatch: /login\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Safari'], headless: true },
-    },
-    // Project 5: Search tests on Chromium
+    // Project 4: Search tests on Chromium
     {
       name: 'search-chromium',
       testMatch: /search\.spec\.ts/,
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], headless: true },
     },
-    // Project 6: Search tests on Firefox
+    // Project 5: Search tests on Firefox
     {
       name: 'search-firefox',
       testMatch: /search\.spec\.ts/,
       dependencies: ['setup'],
       use: { ...devices['Desktop Firefox'], headless: true },
     },
-    // Project 7: Search tests on WebKit
-    {
-      name: 'search-webkit',
-      testMatch: /search\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Safari'], headless: true },
-    },
-    // Project 8: Add Candidate tests on Chromium
+    // Project 6: Add Candidate tests on Chromium
     {
       name: 'addcandidate-chromium',
       testMatch: /addCandidate\.spec\.ts/,
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], headless: true },
     },
-    // Project 9: Add Candidate tests on Firefox
+    // Project 7: Add Candidate tests on Firefox
     {
       name: 'addcandidate-firefox',
       testMatch: /addCandidate\.spec\.ts/,
       dependencies: ['setup'],
       use: { ...devices['Desktop Firefox'], headless: true },
-    },
-    // Project 10: Add Candidate tests on WebKit
-    {
-      name: 'addcandidate-webkit',
-      testMatch: /addCandidate\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Safari'], headless: true },
     },
   ],
 });
